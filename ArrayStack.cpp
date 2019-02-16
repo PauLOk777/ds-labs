@@ -48,7 +48,7 @@ public:
 		}
 	}
 
-	void Clear() {
+	void clear() {
 		if (last == 0) {
 			cout << "Well done. Stack is empty!\n";
 		}
@@ -58,7 +58,7 @@ public:
 		}
 	}
 
-	int Size() {
+	int size() {
 		return last;
 	}
 
