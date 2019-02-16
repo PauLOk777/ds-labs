@@ -53,8 +53,9 @@ public:
 			cout << "Well done. Stack is empty!\n";
 		}
 		else {
-			stack[last] = NULL;
-			last--;
+			for (; last == 0; last--) {
+				stack[last] = NULL;
+			}
 		}
 	}
 
