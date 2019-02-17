@@ -66,12 +66,8 @@ public:
 	}
 
 	bool isEmpty() {
-		if (last == 0) {
-			return true;
-		}							//Проверка на пустоту стека.
-		else {
-			return false;
-		}
+		bool result = (last == 0);
+		return result;							//Проверка на пустоту стека.
 	}
 
 	void PushMiddle(const char temp) {
