@@ -18,7 +18,7 @@ public:
 	void push(char value) {					
 		if (last == Size) {
 			cout << "Your stack is full!!!\n";
-			exit(1);					//Добавляем в конец стека елемент.
+			exit(1);								//Добавляем в конец стека елемент.
 		}
 		stack[last] = value;
 		last++;
@@ -31,7 +31,7 @@ public:
 			return false;
 		}
 		else {
-			char value;					//Удаляем последний елемент и выводим его на экран.
+			char value;								//Удаляем последний елемент и выводим его на экран.
 			value = stack[last - 1];					
 			stack[last-1] = NULL;
 			last--;
@@ -44,7 +44,7 @@ public:
 	char top() {
 		if (last == 0) {
 			cout << "Stack is empty!\n";
-		}						      //Выводим на экран последний элемент без его удаления.
+		}											//Выводим на экран последний элемент без его удаления.
 		else {
 			return stack[last - 1];
 		}
@@ -55,19 +55,23 @@ public:
 			cout << "Well done. Stack is empty!\n";
 		}
 		else {
-			for (; last!=0; last--) {			 //Полная очистка стека.
+			for (; last!=0; last--) {					//Полная очистка стека.
 				stack[last - 1] = NULL;
 			}
 		}
 	}
 
 	int size() {
-		return last;						//Возвращаем размер стека.
+		return last;									//Возвращаем размер стека.
 	}
 
 	bool isEmpty() {
-		bool result = (last == 0);
-		return result;							//Проверка на пустоту стека.
+		if (last == 0) {
+			return true;
+		}												//Проверка на пустоту стека.
+		else {
+			return false;
+		}
 	}
 
 	void PushMiddle(const char temp) {
@@ -76,24 +80,23 @@ public:
 		}
 		else {
 			int i = 0;
-			int *newStack = new int[Size];
+			MyStack newStack(Size);
 			for (; i < last / 2; i++) {
-				newStack[i] = stack[last - i - 1];
+				newStack.stack[i] = stack[last - i - 1];
 				stack[last - i - 1] = NULL;
 			}
-			newStack[i] = temp;
+			newStack.stack[i] = temp;
 			for (; i < last; i++) {
-				newStack[i + 1] = stack[last - i - 1];		//Добавления в середину стека элемента.
+				newStack.stack[i + 1] = stack[last - i - 1];		//Добавления в середину стека элемента.
 				stack[last - i - 1] = NULL;
 			}
 			last++;
 			
 			for (int j = 0; j < last; j++) {
-				stack[j] = newStack[last - j - 1];
-				newStack[last - j - 1] = NULL;
+				stack[j] = newStack.stack[last - j - 1];
+				newStack.stack[last - j - 1] = NULL;
 			}
 			stack[last] = NULL;
-			delete[] newStack;
 		}
 	}
 
@@ -106,20 +109,19 @@ public:
 			cout << "Stack is empty!\n";
 		}
 		else {
-			char *newStack = new char[Size];
+			MyStack newStack(Size);
 			for (int i = 0; i < last; i++) {
-				newStack[i] = stack[last - i - 1];
-				stack[last - i - 1] = NULL;			//Вывод нашего стека на экран без его удаления.
+				newStack.stack[i] = stack[last - i - 1];
+				stack[last - i - 1] = NULL;					//Вывод нашего стека на экран без его удаления.
 			}
-			newStack[last] = NULL;
+			newStack.stack[last] = NULL;
 			for (int i = 0; i < last; i++) {
-				stack[i] = newStack[last - i - 1];
-				cout << newStack[last - i - 1] << " ";
-				newStack[last - i - 1] = NULL;
+				stack[i] = newStack.stack[last - i - 1];
+				cout << newStack.stack[last - i - 1] << " ";
+				newStack.stack[last - i - 1] = NULL;
 			}
 			cout << endl;
 			stack[last] = NULL;
-			delete[] newStack;
 		}
 	}
 };
