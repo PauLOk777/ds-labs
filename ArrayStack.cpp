@@ -18,7 +18,7 @@ public:
 	void push(char value) {					
 		if (last == Size) {
 			cout << "Your stack is full!!!\n";
-			exit(1);								//Добавляем в конец стека елемент.
+			exit(1);					//Добавляем в конец стека елемент.
 		}
 		stack[last] = value;
 		last++;
@@ -31,7 +31,7 @@ public:
 			return false;
 		}
 		else {
-			char value;								//Удаляем последний елемент и выводим его на экран.
+			char value;					//Удаляем последний елемент и выводим его на экран.
 			value = stack[last - 1];					
 			stack[last-1] = NULL;
 			last--;
@@ -44,7 +44,7 @@ public:
 	char top() {
 		if (last == 0) {
 			cout << "Stack is empty!\n";
-		}											//Выводим на экран последний элемент без его удаления.
+		}						      //Выводим на экран последний элемент без его удаления.
 		else {
 			return stack[last - 1];
 		}
@@ -55,20 +55,20 @@ public:
 			cout << "Well done. Stack is empty!\n";
 		}
 		else {
-			for (; last!=0; last--) {					//Полная очистка стека.
+			for (; last!=0; last--) {			 //Полная очистка стека.
 				stack[last - 1] = NULL;
 			}
 		}
 	}
 
 	int size() {
-		return last;									//Возвращаем размер стека.
+		return last;						//Возвращаем размер стека.
 	}
 
 	bool isEmpty() {
 		if (last == 0) {
 			return true;
-		}												//Проверка на пустоту стека.
+		}							//Проверка на пустоту стека.
 		else {
 			return false;
 		}
@@ -113,7 +113,7 @@ public:
 			char *newStack = new char[Size];
 			for (int i = 0; i < last; i++) {
 				newStack[i] = stack[last - i - 1];
-				stack[last - i - 1] = NULL;					//Вывод нашего стека на экран без его удаления.
+				stack[last - i - 1] = NULL;			//Вывод нашего стека на экран без его удаления.
 			}
 			newStack[last] = NULL;
 			for (int i = 0; i < last; i++) {
