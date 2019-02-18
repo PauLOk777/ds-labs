@@ -142,7 +142,7 @@ int main() {
 	x.PushMiddle(MyCh);
 	x.Show();
 
-	cout << "Now we will delete the head of stack\n";
+	cout << "Now we will delete the head of stack.\n";
 	char temp;
 	x.pop(temp);
 	cout << "We deleted: " << temp << endl;
