@@ -121,7 +121,7 @@ int main() {
 	PushMiddle(x, MyCh);
 	Show(x);
 
-	cout << "Now we will delete the head of stack\n";
+	cout << "Now we will delete the head of stack.\n";
 	char temp;
 	pop(x, temp);
 	cout << "We deleted: " << temp << endl;
