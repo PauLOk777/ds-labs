@@ -15,7 +15,7 @@ public:
 		stack[last] = NULL;
 	}
 
-	void push(char value) {					
+	void push(char value) {
 		if (last == Size) {
 			cout << "Your stack is full!!!\n";
 			exit(1);								//Добавляем в конец стека елемент.
@@ -31,8 +31,8 @@ public:
 			return;
 		}
 		else {
-			temp = stack[this->last - 1];					
-			stack[this->last-1] = NULL;			//Удаляем последний елемент и выводим его на экран.
+			temp = stack[this->last - 1];
+			stack[this->last - 1] = NULL;			//Удаляем последний елемент и выводим его на экран.
 			this->last--;
 			return;
 		}
@@ -53,9 +53,12 @@ public:
 			cout << "Well done. Stack is empty!\n";
 		}
 		else {
-			for (; last!=0; last--) {				//Полная очистка стека.
-				stack[last - 1] = NULL;
+			char temp;
+			for (; last != 0;) {				//Полная очистка стека.
+				this->pop(temp);
+				cout << "Deleted: " << temp << endl;
 			}
+			cout << "Your stack is clear!\n";
 		}
 	}
 
@@ -122,40 +125,41 @@ int main() {
 	int size;
 	cout << "Input size of stack: " << endl;
 	cin >> size;
-	MyStack Stack(size);
+	MyStack x(size);
 	char ch;
+	cout << "We will add your symbol to stack 5th times.\n";
 	cout << "Input your char: "; cin >> ch;
-	
-	Stack.push(ch);
-	Stack.push(ch);
-	Stack.push(ch);
-	Stack.push(ch);
+	x.push(ch);
+	x.push(ch);
+	x.push(ch);
+	x.push(ch);
+	x.push(ch);
 
-	Stack.Show();
+	x.Show();
 
 	char MyCh;
-	cout << "Input which element you wanna to add: "; cin >> MyCh;
+	cout << "Input which element you wanna add: "; cin >> MyCh;
+	x.PushMiddle(MyCh);
+	x.Show();
 
-	Stack.PushMiddle(MyCh);
+	cout << "Now we will delete the head of stack\n";
+	char temp;
+	x.pop(temp);
+	cout << "We deleted: " << temp << endl;
+	x.Show();
 
-	Stack.Show();
+	cout << "The head of stack: " << x.top() << endl;
 
-	char value;
-	Stack.pop(value);
+	cout << "Size of stack: " << x.size() << endl;
 
-	Stack.Show();
+	cout << "Now we will clear all stack.\n";
+	x.clear();
 
-	cout << "Size of stack: " << Stack.size() << endl;
-	
-	cout << "Head of stack: " << Stack.top() << endl;
-
-	Stack.clear();
-	
-	if (Stack.isEmpty()) {
-		cout << "Stack is really empty.\n";
+	if (x.isEmpty()) {
+		cout << "Really clear!\n";
 	}
 	else {
-		cout << "Stack isn't empty.\n";
+		cout << "He is not clear.\n";
 	}
 
 	return 0;
