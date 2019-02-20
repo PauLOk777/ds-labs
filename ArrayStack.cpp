@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -122,18 +123,18 @@ public:
 };
 
 int main() {
+	srand(time(NULL));
 	int size;
 	cout << "Input size of stack: " << endl;
 	cin >> size;
 	MyStack x(size);
 	char ch;
-	cout << "We will add your symbol to stack 5th times.\n";
-	cout << "Input your char: "; cin >> ch;
-	x.push(ch);
-	x.push(ch);
-	x.push(ch);
-	x.push(ch);
-	x.push(ch);
+	int elems;
+	cout << "Input how much elements u need: "; cin >> elems;
+	for (int i = 0; i < elems; i++) {
+		ch = rand() % 21 + 65;
+		x.push(ch);
+	}
 
 	x.Show();
 
