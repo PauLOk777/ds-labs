@@ -23,7 +23,7 @@ public:
 		delete[] data;
 	}
 
-	void push_back(int value) {
+	void push_front(int value) {
 		if (elements >= Size) {
 			cout << "Queue is full!\n";
 			exit(1);
@@ -33,7 +33,7 @@ public:
 		elements++;
 	}
 
-	void push_front(int value) {
+	void push_back(int value) {
 		if (elements >= Size) {
 			cout << "Queue is full!\n";
 			exit(1);
@@ -43,7 +43,7 @@ public:
 		elements++;
 	}
 
-	void pop_back(int &out) {
+	void pop_front(int &out) {
 		if (!elements) {
 			cout << "Queue is empty!\n";
 			exit(1);
@@ -54,7 +54,7 @@ public:
 		elements--;
 	}
 
-	void pop_front(int &out) {
+	void pop_back(int &out) {
 		if (!elements) {
 			cout << "Queue is empty!\n";
 			exit(1);
@@ -81,6 +81,19 @@ public:
 		cout << "Queue is clear.\n";
 	}
 
+	void Delete_3rdElem() {
+		Queue newQueue(Size);
+		for (int i = 0; i < Size; i++) {
+			if (data[i] == NULL) {
+				continue;
+			}
+			if ((i + 1) % 3 == 0) {
+				data[i] = NULL;
+				elements--;
+			}
+		}
+	}
+
 	void show() {
 		cout << "Our queue: \n";
 		for (int i = 0; i < Size; i++) {
@@ -96,27 +109,31 @@ int main() {
 	cout << "Input your size: "; cin >> size;
 	Queue x(size);
 	x.show();
-	cout << "Pushing back half of queue.\n";
-	for (int i = 0; i < size / 2; i++) {
+	int temp;
+	cout << "Input how much times u wanna push back: "; cin >> temp;
+	for (int i = 0; i < temp; i++) {
 		x.push_back(rand() % 20 + 1);
 	}
 	x.show();
-	cout << "Pushing front half of queue.\n";
-	for (int i = 0; i < size / 2; i++) {
+	cout << "Input how much times u wanna push front: "; cin >> temp;
+	for (int i = 0; i < temp; i++) {
 		x.push_front(rand() % 20 + 1);
 	}
 	x.show();
-	int temp;
-	cout << "Delete back 1/4 of queue.\n";
-	for (int i = 0; i < size / 4; i++) {
-		x.pop_back(temp);
-		cout << "We deleted: " << temp << endl;
+	int temp_2;
+	x.Delete_3rdElem();
+	cout << "We used function which deleted every 3rd element.\n";
+	x.show();
+	cout << "Input how much times u wanna pop back: "; cin >> temp;
+	for (int i = 0; i < temp; i++) {
+		x.pop_back(temp_2);
+		cout << "We deleted: " << temp_2 << endl;
 	}
 	x.show();
-	cout << "Delete front 1/4 of queue.\n";
-	for (int i = 0; i < size / 4; i++) {
-		x.pop_front(temp);
-		cout << "We deleted: " << temp << endl;
+	cout << "Input how much times u wanna pop front: "; cin >> temp;
+	for (int i = 0; i < temp; i++) {
+		x.pop_front(temp_2);
+		cout << "We deleted: " << temp_2 << endl;
 	}
 	x.show();
 	cout << "Size of queue: " << x.size() << endl;
