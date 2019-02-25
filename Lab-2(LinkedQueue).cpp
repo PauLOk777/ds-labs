@@ -58,14 +58,16 @@ public:
 			out = back->data;
 			delete back;
 			back = front = NULL;
-			exit(1);
+			Size--;
 		}
-		elem *del = back;
-		out = back->data;
-		back = back->next;
-		delete del;
-		back->prev = NULL;
-		Size--;
+		else {
+			elem *del = back;
+			out = back->data;
+			back = back->next;
+			delete del;
+			back->prev = NULL;
+			Size--;
+		}
 	}
 
 	void pop_front(int &out) {
@@ -77,14 +79,17 @@ public:
 			out = front->data;
 			delete front;
 			back = front = NULL;
-			exit(1);
+			Size--;
+	
 		}
-		elem *del = front;
-		out = front->data;
-		front = front->prev;
-		delete del;
-		front->next = NULL;
-		Size--;
+		else {
+			elem *del = front;
+			out = front->data;
+			front = front->prev;
+			delete del;
+			front->next = NULL;
+			Size--;
+		}
 	}
 
 	void clear() {
@@ -96,7 +101,6 @@ public:
 		}
 		front = NULL;
 		Size = 0;
-		cout << "Your queue is clear.\n";
 	}
 
 	int size() {
@@ -105,6 +109,25 @@ public:
 
 	bool isEmpty() {
 		return (Size == 0);
+	}
+
+	void Delete_3rdElem() {
+		Queue newQueue;
+		int temp, count = 0;
+		int newSize = Size;
+		for (int i = 1; i <= newSize; i++) {
+			this->pop_back(temp);
+			if (!(i % 3 == 0)) {
+				newQueue.push_back(temp);
+			}
+			else count++;
+		}
+		this->clear();
+		for (int i = 1; i <= newSize - count; i++) {
+			newQueue.pop_back(temp);
+			this->push_back(temp);
+		}
+		newQueue.clear();
 	}
 
 	void show() {
@@ -141,6 +164,9 @@ int main() {
 	x.show();
 	int number_1, number_2;
 	int temp;
+	x.Delete_3rdElem();
+	cout << "We used function which deleted every 3rd element.\n";
+	x.show();
 	cout << "How many times you want to pop back? Input: "; cin >> number_1;
 	for (int i = 0; i < number_1; i++) {
 		x.pop_back(temp);
