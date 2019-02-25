@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -104,15 +105,15 @@ int size(const MyStack &other) {
 }
 
 int main() {
+	srand(time(NULL));
 	MyStack x;
 	char ch;
-	cout << "We will add your symbol to stack 5th times.\n";
-	cout << "Input your char: "; cin >> ch;
-	push(x, ch);
-	push(x, ch);
-	push(x, ch);
-	push(x, ch);
-	push(x, ch);
+	int elems;
+	cout << "Input how much elements u need: "; cin >> elems;
+	for (int i = 0; i < elems; i++) {
+		ch = rand() % 21 + 65;
+		push(x, ch);
+	}
 
 	Show(x);
 
@@ -142,4 +143,5 @@ int main() {
 	}
 
 	return 0;
+
 }
