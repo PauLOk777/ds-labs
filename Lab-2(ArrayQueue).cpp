@@ -100,7 +100,7 @@ public:
 		temp_back = back;
 		back = 2;
 		for (int i = 1; i <= Size; i++) {
-			if (data[i] == NULL) {
+			if (data[i - 1] == NULL) {
 				continue;
 			}
 			if (i % 3 == 0) {
