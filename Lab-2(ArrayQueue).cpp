@@ -26,7 +26,7 @@ public:
 	void push_front(int value) {
 		if (elements >= Size) {
 			cout << "Queue is full!\n";
-			exit(1);
+			return;
 		}
 		data[back] = value;
 		back = (back + Size - 1) % Size;
@@ -36,33 +36,47 @@ public:
 	void push_back(int value) {
 		if (elements >= Size) {
 			cout << "Queue is full!\n";
-			exit(1);
+			return;
 		}
 		front = (front + 1) % Size;
 		data[front] = value;
 		elements++;
 	}
 
-	void pop_front(int &out) {
+	bool pop_front(int &out) {
 		if (!elements) {
 			cout << "Queue is empty!\n";
 			exit(1);
 		}
-		back = (back + 1) % Size;
-		out = data[back];
-		data[back] = NULL;
-		elements--;
+		if (data[back] == NULL) {
+			back = (back + 1) % Size;
+			return false;
+		}
+		else {
+			out = data[back];
+			data[back] = NULL;
+			back = (back + 1) % Size;
+			elements--;
+			return true;
+		}
 	}
 
-	void pop_back(int &out) {
+	bool pop_back(int &out) {
 		if (!elements) {
 			cout << "Queue is empty!\n";
 			exit(1);
 		}
-		out = data[front];
-		data[front] = NULL;
-		front = (front + Size - 1) % Size;
-		elements--;
+		if (data[front] == NULL) {
+			front = (front + Size - 1) % Size;
+			return false;
+		}
+		else {
+			out = data[front];
+			data[front] = NULL;
+			front = (front + Size - 1) % Size;
+			elements--;
+			return true;
+		}
 	}
 
 	int size() {
@@ -82,16 +96,21 @@ public:
 	}
 
 	void Delete_3rdElem() {
-		Queue newQueue(Size);
-		for (int i = 0; i < Size; i++) {
+		int temp_back;
+		temp_back = back;
+		back = 2;
+		for (int i = 1; i <= Size; i++) {
 			if (data[i] == NULL) {
 				continue;
 			}
-			if ((i + 1) % 3 == 0) {
-				data[i] = NULL;
-				elements--;
+			if (i % 3 == 0) {
+				int newTemp;
+				pop_front(newTemp);
+				cout << "We deleted: " << newTemp << endl;
+				back += 2;
 			}
 		}
+		back = temp_back;
 	}
 
 	void show() {
@@ -105,6 +124,8 @@ public:
 
 int main() {
 	srand(time(NULL));
+	setlocale(LC_ALL, "rus");
+	cout << "На основi масиву!!!\n";
 	int size;
 	cout << "Input your size: "; cin >> size;
 	Queue x(size);
@@ -126,14 +147,22 @@ int main() {
 	x.show();
 	cout << "Input how much times u wanna pop back: "; cin >> temp;
 	for (int i = 0; i < temp; i++) {
-		x.pop_back(temp_2);
-		cout << "We deleted: " << temp_2 << endl;
+		if (!x.pop_back(temp_2)) {
+			i--;
+		}
+		else {
+			cout << "We deleted: " << temp_2 << endl;
+		}
 	}
 	x.show();
 	cout << "Input how much times u wanna pop front: "; cin >> temp;
 	for (int i = 0; i < temp; i++) {
-		x.pop_front(temp_2);
-		cout << "We deleted: " << temp_2 << endl;
+		if (!x.pop_front(temp_2)) {
+			i--;
+		}
+		else {
+			cout << "We deleted: " << temp_2 << endl;
+		}
 	}
 	x.show();
 	cout << "Size of queue: " << x.size() << endl;
