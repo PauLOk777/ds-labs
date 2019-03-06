@@ -67,7 +67,6 @@ public:
 		oneSideQueue newQueue;
 		newBack = back;
 		int value;
-		int forPop;
 		while (back) {
 			temp = back;
 			value = temp->data;
