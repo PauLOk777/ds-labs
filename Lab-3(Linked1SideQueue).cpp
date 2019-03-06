@@ -27,7 +27,7 @@ public:
 		elements++;
 	}
 	void pop(int &out) {
-		if (!this->head) {
+		if (!this->back) {
 			cout << "Queue is empty!" << endl;
 			return;
 		}
