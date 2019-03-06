@@ -57,6 +57,7 @@ public:
 			del = back;
 			back = back->next;
 			delete del;
+			elements--;
 		}
 	}
 	bool isEmpty() {
