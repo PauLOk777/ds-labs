@@ -19,16 +19,17 @@ public:
 		back = NULL;
 	}
 	void push(int value) {
-			elem *temp = new elem;
-			temp->data = value;
-			temp->next = back;
-			back = temp;
-			elements++;
+		elem *temp = new elem;
+		temp->data = value;
+		temp->next = back;
+		back = temp;
+		head = temp;
+		elements++;
 	}
 	void pop(int &out) {
-		if (!this->back) {
+		if (!this->head) {
 			cout << "Queue is empty!" << endl;
-			exit(1);
+			return;
 		}
 		if (!this->back->next) {
 			out = this->back->data;
@@ -62,13 +63,22 @@ public:
 		return (elements == 0);
 	}
 	void show() {
-		elem *temp;
-		int newElem = elements;
-		while (newElem) {
+		elem *temp, *newBack;
+		oneSideQueue newQueue;
+		newBack = back;
+		int value;
+		int forPop;
+		while (back) {
 			temp = back;
-			cout << temp->data << " ";
+			value = temp->data;
+			newQueue.push(value);
 			back = back->next;
-			newElem--;
+		}
+		back = newBack;
+		while (newQueue.back) {
+			temp = newQueue.back;
+			cout << temp->data << " ";
+			newQueue.back = newQueue.back->next;
 		}
 		cout << endl;
 	}
@@ -98,6 +108,7 @@ int main() {
 	else {
 		cout << "Queue isn't clear!" << endl;
 	}
-
+	
+	system("pause");
 	return 0;
 }
