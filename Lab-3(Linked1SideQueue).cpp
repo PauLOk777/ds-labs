@@ -67,19 +67,19 @@ public:
 		elem *temp, *newBack;
 		oneSideQueue newQueue;
 		newBack = back;
-		int value;
-		while (back) {
+		while (newBack) {
 			temp = back;
-			value = temp->data;
-			newQueue.push(value);
-			back = back->next;
+			newQueue.push(temp->data);
+			newBack = newBack->next;
 		}
-		back = newBack;
+		newBack_2 = newQueue.back;
 		while (newQueue.back) {
 			temp = newQueue.back;
 			cout << temp->data << " ";
 			newQueue.back = newQueue.back->next;
 		}
+		newQueue.back = newBack_2;
+		newQueue.clear();
 		cout << endl;
 	}
 };
@@ -102,7 +102,7 @@ int main() {
 	queue.show();
 	cout << "Size of array: " << queue.size() << endl;
 	queue.clear();
-	if (!queue.isEmpty()) {
+	if (queue.isEmpty()) {
 		cout << "Queue is clear!" << endl;
 	}
 	else {
