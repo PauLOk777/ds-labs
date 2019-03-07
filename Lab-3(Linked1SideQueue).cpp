@@ -23,7 +23,6 @@ public:
 		temp->data = value;
 		temp->next = back;
 		back = temp;
-		head = temp;
 		elements++;
 	}
 	void pop(int &out) {
@@ -68,17 +67,16 @@ public:
 		oneSideQueue newQueue;
 		newBack = back;
 		while (newBack) {
-			temp = back;
+			temp = newBack;
 			newQueue.push(temp->data);
 			newBack = newBack->next;
 		}
-		newBack_2 = newQueue.back;
-		while (newQueue.back) {
-			temp = newQueue.back;
+		elem *newBack_2 = newQueue.back;
+		while (newBack_2) {
+			temp = newBack_2;
 			cout << temp->data << " ";
-			newQueue.back = newQueue.back->next;
+			newBack_2 = newBack_2->next;
 		}
-		newQueue.back = newBack_2;
 		newQueue.clear();
 		cout << endl;
 	}
@@ -108,7 +106,6 @@ int main() {
 	else {
 		cout << "Queue isn't clear!" << endl;
 	}
-	
-	system("pause");
+
 	return 0;
 }
