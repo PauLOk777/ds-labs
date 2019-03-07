@@ -61,13 +61,15 @@ public:
 			back = NULL;
 			elements--;
 		}
-		elem *temp;
-		temp = back;
-		out = back->data;
-		outPriority = back->priority;
-		back = back->next;
-		delete temp;
-		elements--;
+		else {
+			elem *temp;
+			temp = back;
+			out = back->data;
+			outPriority = back->priority;
+			back = back->next;
+			delete temp;
+			elements--;
+		}
 	}
 
 	void clear() {
@@ -200,7 +202,6 @@ int main() {
 	else {
 		cout << "Queue isn't clear!" << endl;
 	}
-
-	system("pause");
+	
 	return 0;
 }
