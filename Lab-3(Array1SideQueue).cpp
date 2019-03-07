@@ -84,6 +84,7 @@ int main() {
 	int out;
 	for (int i = 0; i < temp; i++) {
 		queue.pop(out);
+		cout << "We deleted: " << out << endl;
 	}
 	queue.show();
 	cout << "Size of array: " << queue.size() << endl;
