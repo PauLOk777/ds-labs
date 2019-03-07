@@ -45,7 +45,7 @@ public:
 	}
 
 	void show() {
-		int index = back;
+		int index = back + 1;
 		for (; index <= front; index++) {
 			cout << data[index] << " ";
 		}
@@ -53,7 +53,7 @@ public:
 	}
 
 	void clear() {
-		int index = back;
+		int index = back + 1;
 		for (; index <= front; index++) {
 			data[index] = NULL;
 			elements--;
@@ -84,12 +84,11 @@ int main() {
 	int out;
 	for (int i = 0; i < temp; i++) {
 		queue.pop(out);
-		cout << "We deleted: " << out << endl;
 	}
 	queue.show();
 	cout << "Size of array: " << queue.size() << endl;
 	queue.clear();
-	if (!queue.isEmpty()) {
+	if (queue.isEmpty()) {
 		cout << "Queue is clear!" << endl;
 	}
 	else {
