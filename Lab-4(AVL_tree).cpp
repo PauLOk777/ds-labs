@@ -18,9 +18,9 @@ public:
 };
 
 class AVL_tree {
-private:
-	elem *top;
 public:
+	elem *top;
+	
 	AVL_tree() {
 		top = nullptr;
 	}
@@ -132,6 +132,27 @@ public:
 	
 	void del(const int &data) {
 		top = remove(top, data);
+	}
+
+	void prefix(elem *head) {
+		if (!head) return;
+		cout << head->data << " ";
+		prefix(head->left);
+		prefix(head->right);
+	}
+
+	void infix(elem *head) {
+		if (!head) return;
+		prefix(head->left);
+		cout << head->data << " ";
+		prefix(head->right);
+	}
+
+	void postfix(elem *head) {
+		if (!head) return;
+		prefix(head->left);
+		prefix(head->right);
+		cout << head->data << " ";
 	}
 };
 
