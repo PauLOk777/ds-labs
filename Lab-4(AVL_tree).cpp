@@ -3,6 +3,9 @@
 
 using namespace std;
 
+void FillingArray(int *, int);
+void PrintArray(int *, int);
+
 class elem {
 public:
 	int data;
@@ -134,6 +137,21 @@ public:
 		top = remove(top, data);
 	}
 
+	bool find(const int &data) {
+		elem *p = top;
+		while (p) {
+			if (data < p->data) {
+				p = p->left;
+			}else if(data < p->data) {
+				p = p->right;
+			}
+			else if (p->data == data) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void prefix(elem *head) {
 		if (!head) return;
 		cout << head->data << " ";
@@ -157,7 +175,50 @@ public:
 };
 
 int main() {
-	cout << "Hello its AVL FUCKING TREE" << endl;
+	AVL_tree Tree;
+	int size;
+	cout << "Input how many elements u need: "; cin >> size;
+	int *Array = new int[size];
+	FillingArray(Array, size);
+	cout << "Our array: " << endl;
+	PrintArray(Array, size);
+	
+	for (int i = 0; i < size; i++) {
+		Tree.add(Array[i]);
+	}
+	cout << "Infix: ";
+	Tree.infix(Tree.top); cout << endl;
+	cout << "Postfix: ";
+	Tree.postfix(Tree.top); cout << endl;
+	cout << "Prefix: ";
+	Tree.prefix(Tree.top); cout << endl;
 
+	delete[] Array;
+	system("pause");
 	return 0;
+}
+
+void FillingArray(int *Array, int size){
+	srand(time(NULL));
+	int count = 1;
+	while(count - 1 < size) {
+		bool flag = true;
+		int newRandom = rand() % size + 1;
+		for (int j = 0; j < count; j++) {
+			if (Array[j] == newRandom) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			Array[count - 1] = newRandom;
+			count++;
+		}
+	}
+}
+
+void PrintArray(int *Array, int size){
+	for (int i = 0; i < size; i++) {
+		cout << Array[i] << " ";
+	}
+	cout << endl;
 }
