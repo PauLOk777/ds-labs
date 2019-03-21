@@ -39,7 +39,7 @@ public:
 		el->h = (h_left > h_right ? h_left : h_right) + 1;
 	}
 
-	elem *left_rotate(elem *el) {
+	elem* left_rotate(elem *el) {
 		elem *newEl = el->right;
 		el->right = newEl->left;
 		newEl->left = el;
@@ -49,7 +49,7 @@ public:
 		return newEl;
 	}
 
-	elem *right_rotate(elem *el) {
+	elem* right_rotate(elem *el) {
 		elem *newEl = el->left;
 		el->left = newEl->right;
 		newEl->right = el;
@@ -59,7 +59,7 @@ public:
 		return newEl;
 	}
 
-	elem *balancing(elem *el) {
+	elem* balancing(elem *el) {
 		calc_height(el);
 		if (balance_factor(el) == 2) {
 			if (balance_factor(el->right) < 0) {
@@ -76,6 +76,62 @@ public:
 			return el;
 		}
 		return el;
+	}
+
+	elem* ins(elem *el, const int &data) {
+		if (!el) {
+			return new elem(data);
+		}
+		if (data < el->data) {
+			el->left = ins(el->left, data);
+		}
+		else {
+			el->right = ins(el->right, data);
+		}
+		return balancing(el);
+	}
+
+	void add(const int &data) {
+		this->top = ins(top, data);
+	}
+
+	elem* find_left(elem *el) {
+		return el->left ? find_left(el->left) : el;
+	}
+
+	elem* removemin(elem *el) {
+		if (!el->left) {
+			return el->right;
+		}
+		el->left = removemin(el->left);
+		return balancing(el);
+	}
+
+	elem* remove(elem *el, const int &data) {
+		if (!el) return 0;
+		if (data < el->data) {
+			el->left = remove(el->left, data);
+		}
+		else if (data > el->data) {
+			el->right = remove(el->right, data);
+		}
+		else {
+			elem *q = el->left;
+			elem *r = el->right;
+			delete el;
+
+			if (!r) return q;
+
+			elem *min = find_left(r);
+			min->right = removemin(r);
+			min->left = q;
+			return balancing(min);
+		}
+		return balancing(el);
+	}
+	
+	void del(const int &data) {
+		top = remove(top, data);
 	}
 };
 
