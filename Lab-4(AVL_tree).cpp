@@ -8,14 +8,16 @@ void PrintArray(int *, int);
 
 class elem {
 public:
+	int key;
 	int data;
 	unsigned int h;
 	elem *left, *right;
 
-	elem(int value = 0) {
+	elem(int value, int keyValue) {
 		left = nullptr;
 		right = nullptr;
 		data = value;
+		key = keyValue;
 		h = 0;
 	}
 };
@@ -23,9 +25,11 @@ public:
 class AVL_tree {
 public:
 	elem *top;
-	
+	int size;
+
 	AVL_tree() {
 		top = nullptr;
+		size = 0;
 	}
 
 	unsigned int height(elem *el) {
@@ -81,21 +85,22 @@ public:
 		return el;
 	}
 
-	elem* ins(elem *el, const int &data) {
+	elem* ins(elem *el, int data, int keyData) {
 		if (!el) {
-			return new elem(data);
+			return new elem(data, keyData);
 		}
 		if (data < el->data) {
-			el->left = ins(el->left, data);
+			el->left = ins(el->left, data, keyData);
 		}
 		else {
-			el->right = ins(el->right, data);
+			el->right = ins(el->right, data, keyData);
 		}
 		return balancing(el);
 	}
 
-	void add(const int &data) {
-		this->top = ins(top, data);
+	void add(int data, int keyData) {
+		this->top = ins(top, data, keyData);
+		size++;
 	}
 
 	elem* find_left(elem *el) {
@@ -110,7 +115,7 @@ public:
 		return balancing(el);
 	}
 
-	elem* remove(elem *el, const int &data) {
+	elem* remove(elem *el, int data) {
 		if (!el) return 0;
 		if (data < el->data) {
 			el->left = remove(el->left, data);
@@ -133,11 +138,12 @@ public:
 		return balancing(el);
 	}
 	
-	void del(const int &data) {
+	void del(int data) {
 		top = remove(top, data);
+		size--;
 	}
 
-	bool find(const int &data) {
+	bool find(int data) {
 		elem *p = top;
 		while (p) {
 			if (data < p->data) {
@@ -154,7 +160,7 @@ public:
 
 	void prefix(elem *head) {
 		if (!head) return;
-		cout << head->data << " ";
+		cout << head->data << "-" << head->key << " ";
 		prefix(head->left);
 		prefix(head->right);
 	}
@@ -162,7 +168,7 @@ public:
 	void infix(elem *head) {
 		if (!head) return;
 		prefix(head->left);
-		cout << head->data << " ";
+		cout << head->data << "-" << head->key << " ";
 		prefix(head->right);
 	}
 
@@ -170,21 +176,22 @@ public:
 		if (!head) return;
 		prefix(head->left);
 		prefix(head->right);
-		cout << head->data << " ";
+		cout << head->data << "-" << head->key << " ";
 	}
 };
 
 int main() {
+	srand(time(NULL));
 	AVL_tree Tree;
 	int size;
 	cout << "Input how many elements u need: "; cin >> size;
-	int *Array = new int[size];
-	FillingArray(Array, size);
+	int *ArrayData = new int[size];
+	FillingArray(ArrayData, size);
 	cout << "Our array: " << endl;
-	PrintArray(Array, size);
-	
+	PrintArray(ArrayData, size);
 	for (int i = 0; i < size; i++) {
-		Tree.add(Array[i]);
+		int key = rand() % size + 1;
+		Tree.add(ArrayData[i], key);
 	}
 	cout << "Infix: ";
 	Tree.infix(Tree.top); cout << endl;
@@ -193,7 +200,7 @@ int main() {
 	cout << "Prefix: ";
 	Tree.prefix(Tree.top); cout << endl;
 
-	delete[] Array;
+	delete[] ArrayData;
 	system("pause");
 	return 0;
 }
