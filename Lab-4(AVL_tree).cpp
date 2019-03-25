@@ -3,8 +3,13 @@
 
 using namespace std;
 
-void FillingArray(int *, int);
+class AVL_tree;
+
+void FillingArrayData(int *, int);
 void PrintArray(int *, int);
+void FillingAVL(AVL_tree ,int *, int *, int);
+void PrintAVL(AVL_tree);
+void FillingArrayKeys(int *, int);
 
 class elem {
 public:
@@ -178,34 +183,50 @@ public:
 		prefix(head->right);
 		cout << head->data << "-" << head->key << " ";
 	}
+
+	void MyFunction(int *Array, int size) {
+		for (int i = 0; i < size - 1; i++) {
+			for (int j = i; j < size - 1; j++) {
+				int temp = Array[j];
+				Array[j] = Array[j + 1];
+				Array[j + 1] = temp;
+			}
+		}
+		del(Array[size / 2]);
+	}
 };
 
 int main() {
-	srand(time(NULL));
 	AVL_tree Tree;
 	int size;
 	cout << "Input how many elements u need: "; cin >> size;
 	int *ArrayData = new int[size];
-	FillingArray(ArrayData, size);
-	cout << "Our array: " << endl;
+	int *ArrayKeys = new int[size];
+	FillingArrayData(ArrayData, size);
+	FillingArrayKeys(ArrayKeys, size);
+	cout << "Our array of data: " << endl;
 	PrintArray(ArrayData, size);
-	for (int i = 0; i < size; i++) {
-		int key = rand() % size + 1;
-		Tree.add(ArrayData[i], key);
+	cout << "Out array of keys: " << endl;
+	PrintArray(ArrayKeys, size);
+	/*for (int i = 0; i < size; i++) {
+		Tree.add(ArrayData[i], ArrayKeys[i]);
 	}
 	cout << "Infix: ";
 	Tree.infix(Tree.top); cout << endl;
 	cout << "Postfix: ";
 	Tree.postfix(Tree.top); cout << endl;
 	cout << "Prefix: ";
-	Tree.prefix(Tree.top); cout << endl;
+	Tree.prefix(Tree.top); cout << endl;*/
+	FillingAVL(Tree, ArrayData, ArrayKeys, size);
+	PrintAVL(Tree);
 
+	delete[] ArrayKeys;
 	delete[] ArrayData;
 	system("pause");
 	return 0;
 }
 
-void FillingArray(int *Array, int size){
+void FillingArrayData(int *Array, int size){
 	srand(time(NULL));
 	int count = 1;
 	while(count - 1 < size) {
@@ -228,4 +249,26 @@ void PrintArray(int *Array, int size){
 		cout << Array[i] << " ";
 	}
 	cout << endl;
+}
+
+void PrintAVL(AVL_tree Tree) {
+	cout << "Infix: ";
+	Tree.infix(Tree.top); cout << endl;
+	cout << "Postfix: ";
+	Tree.postfix(Tree.top); cout << endl;
+	cout << "Prefix: ";
+	Tree.prefix(Tree.top); cout << endl;
+}
+
+void FillingAVL(AVL_tree Tree, int *ArrayData, int *ArrayKeys, int size) {
+	for (int i = 0; i < size; i++) {
+		Tree.add(ArrayData[i], ArrayKeys[i]);
+	}
+}
+
+void FillingArrayKeys(int *ArrayKeys, int size) {
+	srand(time(NULL));
+	for (int i = 0; i < size; i++) {
+		ArrayKeys[i] = rand() % size + 1;
+	}
 }
