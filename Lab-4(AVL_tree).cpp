@@ -10,7 +10,7 @@ public:
 	unsigned int h;
 	elem *left, *right;
 
-	elem(int value, int keyValue) {
+	elem(int value = 0, int keyValue = 0) {
 		left = nullptr;
 		right = nullptr;
 		data = value;
@@ -58,8 +58,8 @@ public:
 		el->left = newEl->right;
 		newEl->right = el;
 
-		calc_height(el);
 		calc_height(newEl);
+		calc_height(el);
 		return newEl;
 	}
 
@@ -73,7 +73,7 @@ public:
 			return el;
 		}
 		else if (balance_factor(el) == -2) {
-			if (balance_factor(el->left) < 0) {
+			if (balance_factor(el->left) > 0) {
 				el->left = left_rotate(el->left);
 			}
 			el = right_rotate(el);
@@ -89,14 +89,14 @@ public:
 		if (data < el->data) {
 			el->left = ins(el->left, data, keyData);
 		}
-		else {
+		if(data > el->data){
 			el->right = ins(el->right, data, keyData);
 		}
 		return balancing(el);
 	}
 
 	void add(int data, int keyData) {
-		this->top = ins(top, data, keyData);
+		top = ins(top, data, keyData);
 		size++;
 	}
 
@@ -156,21 +156,21 @@ public:
 	}
 
 	void prefix(elem *head) {
-		if (!head) return;
+		if (!head) { return; }
 		cout << head->data << "-" << head->key << " ";
 		prefix(head->left);
 		prefix(head->right);
 	}
 
 	void infix(elem *head) {
-		if (!head) return;
+		if (!head) { return; }
 		prefix(head->left);
 		cout << head->data << "-" << head->key << " ";
 		prefix(head->right);
 	}
 
 	void postfix(elem *head) {
-		if (!head) return;
+		if (!head) { return; }
 		prefix(head->left);
 		prefix(head->right);
 		cout << head->data << "-" << head->key << " ";
@@ -186,7 +186,7 @@ public:
 				}
 			}
 		}
-		del(Array[size / 2]);
+		del(Array[(size - 1) / 2]);
 	}
 };
 
