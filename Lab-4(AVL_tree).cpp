@@ -10,12 +10,12 @@ public:
 	unsigned int h;
 	elem *left, *right;
 
-	elem(int value = 0, int keyValue = 0) {
+	elem(int value, int keyValue) {
 		left = nullptr;
 		right = nullptr;
 		data = value;
 		key = keyValue;
-		h = 0;
+		h = 1;
 	}
 };
 
@@ -58,8 +58,8 @@ public:
 		el->left = newEl->right;
 		newEl->right = el;
 
-		calc_height(newEl);
 		calc_height(el);
+		calc_height(newEl);
 		return newEl;
 	}
 
@@ -69,15 +69,13 @@ public:
 			if (balance_factor(el->right) < 0) {
 				el->right = right_rotate(el->right);
 			}
-			el = left_rotate(el);
-			return el;
+			return left_rotate(el);
 		}
 		else if (balance_factor(el) == -2) {
 			if (balance_factor(el->left) > 0) {
 				el->left = left_rotate(el->left);
 			}
-			el = right_rotate(el);
-			return el;
+			return right_rotate(el);
 		}
 		return el;
 	}
@@ -89,7 +87,8 @@ public:
 		if (data < el->data) {
 			el->left = ins(el->left, data, keyData);
 		}
-		if(data > el->data){
+		else
+		{
 			el->right = ins(el->right, data, keyData);
 		}
 		return balancing(el);
