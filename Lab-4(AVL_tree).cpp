@@ -10,23 +10,21 @@ public:
 	unsigned int h;
 	elem *left, *right;
 
-	elem(int value, int keyValue) {
+	elem(int value = 0, int keyValue = 0) {
 		left = nullptr;
 		right = nullptr;
 		data = value;
 		key = keyValue;
-		h = 1;
+		h = 0;
 	}
 };
 
 class AVL_tree {
 public:
 	elem *top;
-	int size;
 
 	AVL_tree() {
 		top = nullptr;
-		size = 0;
 	}
 
 	unsigned int height(elem *el) {
@@ -66,37 +64,33 @@ public:
 	elem* balancing(elem *el) {
 		calc_height(el);
 		if (balance_factor(el) == 2) {
-			if (balance_factor(el->right) < 0) {
+			if (balance_factor(el->right) < 0)
 				el->right = right_rotate(el->right);
-			}
-			return left_rotate(el);
+			el = left_rotate(el);
+			return el;
 		}
 		else if (balance_factor(el) == -2) {
-			if (balance_factor(el->left) > 0) {
+			if (balance_factor(el->left) > 0)
 				el->left = left_rotate(el->left);
-			}
-			return right_rotate(el);
+			el = right_rotate(el);
+			return el;
 		}
 		return el;
 	}
 
-	elem* ins(elem *el, int data, int keyData) {
-		if (!el) {
+	elem* ins(elem *el, int& data, int& keyData) {
+		if (!el)
 			return new elem(data, keyData);
-		}
-		if (data < el->data) {
+		if (data < el->data)
 			el->left = ins(el->left, data, keyData);
-		}
 		else
-		{
 			el->right = ins(el->right, data, keyData);
-		}
 		return balancing(el);
 	}
 
-	void add(int data, int keyData) {
+	void add(int& data, int& keyData) {
 		top = ins(top, data, keyData);
-		size++;
+		return;
 	}
 
 	elem* find_left(elem *el) {
@@ -136,7 +130,6 @@ public:
 	
 	void del(int data) {
 		top = remove(top, data);
-		size--;
 	}
 
 	bool find(int data) {
@@ -163,15 +156,15 @@ public:
 
 	void infix(elem *head) {
 		if (!head) { return; }
-		prefix(head->left);
+		infix(head->left);
 		cout << head->data << "-" << head->key << " ";
-		prefix(head->right);
+		infix(head->right);
 	}
 
 	void postfix(elem *head) {
 		if (!head) { return; }
-		prefix(head->left);
-		prefix(head->right);
+		postfix(head->left);
+		postfix(head->right);
 		cout << head->data << "-" << head->key << " ";
 	}
 
