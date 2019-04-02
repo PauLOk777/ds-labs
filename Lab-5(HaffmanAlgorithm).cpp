@@ -1,103 +1,177 @@
 #include <iostream>
-#include <vector>
+#include <string>
+#include <fstream>
+#include "queue_priority.h"
 
 using namespace std;
 
-class elem {
-public:
-	char data;
-	unsigned int amount;
-	elem *left, *right;
-
-	elem(int value = 0, char temp = '\0') {
-		data = temp;
-		amount = value;
-		left = right = nullptr;
-	}
+struct element
+{
+	char value;
+	element *Left, *Right;
 };
 
-class HaffmanTree {
+class half_tree
+{
+	element *Head;
+	int tabs;
 public:
-	elem *top;
+	half_tree();
+	void build_half_tree(queue_priority<element*> &);
+	void print(element *);
+	element *add(element *, element *, int, int);
+	element *GetHead() { return Head; }
+	void show_codes(element *, string);
+};
 
-	HaffmanTree(elem* temp = nullptr) {
-		top = temp;
+half_tree::half_tree()
+{
+	tabs = 0;
+	Head = nullptr;
+}
+
+element *half_tree::add(element *fElem, element *sElem, int fPriority, int sPriority)
+{
+	element *t = new element;
+	t->value = '*';
+	if (sPriority >= fPriority)
+	{
+		t->Left = fElem;
+		t->Right = sElem;
 	}
-
-	bool compare(elem *one, elem *two) {
-		return one->amount < two->amount;
+	else
+	{
+		t->Left = sElem;
+		t->Right = fElem;
 	}
+	return t;
+}
+void half_tree::build_half_tree(queue_priority<element*> &frequency)
+{
+	element *fElem, *sElem;
+	int fPriority, sPriority;
 
-	elem *min(vector<elem *> &elems) {
-		elem *min = elems[0];
-		unsigned int erase_position = 0;
-		for (unsigned int i = 1; i < elems.size(); i++) {
-			if (!compare(min, elems[i])) {
-				min = elems[i];
-				erase_position = i;
+	while (frequency.size() != 1)
+	{
+		frequency.pop_priority(fPriority);
+		frequency.pop(fElem);
+		frequency.pop_priority(sPriority);
+		frequency.pop(sElem);
+
+		frequency.push(add(fElem, sElem, fPriority, sPriority), fPriority + sPriority);
+	}
+	frequency.pop(Head);
+}
+void half_tree::show_codes(element *next, string code)
+{
+	bool flag = false;
+	if (next->Left != nullptr)
+	{
+		show_codes(next->Left, code + "0");
+		flag = true;
+	}
+	if (next->Right != nullptr)
+	{
+		show_codes(next->Right, code + "1");
+		flag = true;
+	}
+	if (!flag)
+		cout << code << endl;
+}
+void half_tree::print(element *next)
+{
+	if (next == nullptr)
+		return;
+	tabs++;
+	print(next->Left);
+	for (int i = 0; i < tabs; i++)
+		cout << "  ";
+	cout << next->value << endl;
+	print(next->Right);
+	tabs--;
+	return;
+}
+void count_frequency(queue_priority<element*> &frequency, string &Input)
+{
+	element *next;
+	char buff;
+	int count;
+	while (Input.size() != 0)
+	{
+		count = 0;
+		buff = Input[0];
+		for (int i = 0; i < Input.size(); i++)
+		{
+			if (Input[i] == buff)
+			{
+				count++;
+				Input.erase(Input.begin() + i);
+				i--;
 			}
 		}
-		elems.erase(elems.begin() + erase_position);
-		return min;
+		next = new element;
+		next->value = buff;
+		next->Left = nullptr;
+		next->Right = nullptr;
+		frequency.push(next, count);
+		next = nullptr;
+	}
+}
+char decoder(element *next, string code)
+{
+	if (code.size() == 0)
+	{
+		return next->value;
+	}
+	if (code[0] == '1' && next->Right != nullptr)
+	{
+		return decoder(next->Right, code.substr(1));
+	}
+	if (code[0] == '0' && next->Left != nullptr)
+	{
+		return decoder(next->Left, code.substr(1));
+	}
+	return '*';
+}
+int main()
+{
+	half_tree example;
+	queue_priority<element *> frequency;
+	string Input = "", buff;
+
+	ofstream fout("text.txt");
+
+	if (!fout.is_open()) {
+		cout << "Error.\n";
+		cin.get();
+		exit(1);
 	}
 
-	elem *add(elem *left, elem *right) {
-		elem *new_top = new elem;
-		new_top->amount = left->amount + right->amount;
-		if (compare(left, right)) {
-			new_top->left = left;
-			new_top->right = right;
+	int count = 0;
+	while (true)
+	{
+		buff = "";
+		getline(cin, buff);
+		if (buff == "quit") {
+			break;
 		}
-		else {
-			new_top->left = right;
-			new_top->right = left;
+		count += buff.length();
+		Input.append(buff);
+	}
+	buff = "";
+	count_frequency(frequency, Input);
+	example.build_half_tree(frequency);
+	example.print(example.GetHead());
+	example.show_codes(example.GetHead(), "");
+
+	cout << "ender code for decoding: ";
+	while (true)
+	{
+		cin >> buff;
+		if (buff == "quit") {
+			break;
 		}
-		return new_top;
+		cout << decoder(example.GetHead(), buff) << endl;
 	}
-
-	char find(const string &kod) {
-		elem *temp = top;
-		for (int i = 0; temp, i < kod.length(); i++)
-			if (kod[i] == '0')
-				temp = temp->left;
-			else if (kod[i] == '1')
-				temp = temp->right;
-			else exit(1);
-
-		if (!temp || temp->right || temp->left) return '\0';
-		return temp->data;
-	}
-
-	elem *haffman_algorithm(vector<elem*> &elems) {
-		while (elems.size() > 1)
-			elems.insert(elems.begin(), add(min(elems), min(elems)));
-		return elems[0];
-	}
-
-	void infix(elem *top) {
-		if (!top) return;
-		infix(top->left);
-		if (!(top->left && top->right))
-			cout << top->data << " ";
-		infix(top->right);
-	}
-};
-
-int main() {
-	HaffmanTree Tree;
-	int N;
-	cin >> N;
-	vector<elem*> elems(N);
-	elems[0] = new elem('a', 3);
-	elems[1] = new elem('b', 7);
-	elems[2] = new elem('c', 13);
-	elems[3] = new elem('d', 5);
-	elems[4] = new elem('e', 2);
-	Tree.top = Tree.haffman_algorithm(elems);
-	cout << "top = " << Tree.top->amount << endl;
-
-	Tree.infix(Tree.top);
-
-	system("pause");
 	return 0;
 }
