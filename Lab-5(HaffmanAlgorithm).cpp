@@ -9,6 +9,9 @@ struct element
 {
 	char value;
 	element *Left, *Right;
+	void print() {
+		cout << value << endl;
+	}
 };
 
 class half_tree
@@ -21,7 +24,7 @@ public:
 	void print(element *);
 	element *add(element *, element *, int, int);
 	element *GetHead() { return Head; }
-	void show_codes(element *, string);
+	void show_codes(element *, string, string &);
 };
 
 half_tree::half_tree()
@@ -46,6 +49,7 @@ element *half_tree::add(element *fElem, element *sElem, int fPriority, int sPrio
 	}
 	return t;
 }
+
 void half_tree::build_half_tree(queue_priority<element*> &frequency)
 {
 	element *fElem, *sElem;
@@ -62,21 +66,23 @@ void half_tree::build_half_tree(queue_priority<element*> &frequency)
 	}
 	frequency.pop(Head);
 }
-void half_tree::show_codes(element *next, string code)
+void half_tree::show_codes(element *next, string code, string &out)
 {
 	bool flag = false;
 	if (next->Left != nullptr)
 	{
-		show_codes(next->Left, code + "0");
+		show_codes(next->Left, code + "0", out);
 		flag = true;
 	}
 	if (next->Right != nullptr)
 	{
-		show_codes(next->Right, code + "1");
+		show_codes(next->Right, code + "1", out);
 		flag = true;
 	}
-	if (!flag)
-		cout << code << endl;
+	if (!flag) {
+		cout << code << " " << next->value << endl;
+		out += code + " " + next->value + "\n";
+	}
 }
 void half_tree::print(element *next)
 {
@@ -137,9 +143,8 @@ int main()
 {
 	half_tree example;
 	queue_priority<element *> frequency;
-	string Input = "", buff;
-
-	ofstream fout("text.txt");
+	string Input = "", buff, temp;
+	ofstream fout("output.txt");
 
 	if (!fout.is_open()) {
 		cout << "Error.\n";
@@ -147,31 +152,39 @@ int main()
 		exit(1);
 	}
 
-	int count = 0;
-	while (true)
-	{
-		buff = "";
-		getline(cin, buff);
-		if (buff == "quit") {
-			break;
+	int num;
+	cout << "To read from file press 1, to get your lines press 2.\n"; cin >> num;
+	if (num == 1) {
+		ifstream fin("input.txt");
+		if (!fin.is_open()) {
+			cout << "Error.\n";
+			cin.get();
+			exit(1);
 		}
-		count += buff.length();
-		Input.append(buff);
+		while (!fin.eof()) {
+			buff = "";
+			getline(fin, buff);
+			Input.append(buff);
+		}
+	}
+	else {
+		while (true)
+		{
+			buff = "";
+			getline(cin, buff);
+			if (buff == "quit") {
+				break;
+			}
+			Input.append(buff);
+		}
 	}
 	buff = "";
 	count_frequency(frequency, Input);
 	example.build_half_tree(frequency);
-	example.print(example.GetHead());
-	example.show_codes(example.GetHead(), "");
-
-	cout << "ender code for decoding: ";
-	while (true)
-	{
-		cin >> buff;
-		if (buff == "quit") {
-			break;
-		}
-		cout << decoder(example.GetHead(), buff) << endl;
-	}
+	example.show_codes(example.GetHead(), "", temp);
+	fout << temp;
+	
+	fout.close();
+	system("pause");
 	return 0;
 }
