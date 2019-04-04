@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <map>
 #include "queue_priority.h"
 
 using namespace std;
@@ -12,11 +13,14 @@ struct element
 	void print() {
 		cout << value << endl;
 	}
+
+
 };
 
 class half_tree
 {
 	element *Head;
+	map<char, int> f;
 	int tabs;
 public:
 	half_tree();
@@ -25,6 +29,7 @@ public:
 	element *add(element *, element *, int, int);
 	element *GetHead() { return Head; }
 	void show_codes(element *, string, string &);
+	void mass(element *, string, int &, int &, int &, int &);
 };
 
 half_tree::half_tree()
@@ -52,15 +57,19 @@ element *half_tree::add(element *fElem, element *sElem, int fPriority, int sPrio
 
 void half_tree::build_half_tree(queue_priority<element*> &frequency)
 {
+	std::map<char, int>::iterator it = f.end();
+
 	element *fElem, *sElem;
 	int fPriority, sPriority;
-
 	while (frequency.size() != 1)
 	{
 		frequency.pop_priority(fPriority);
 		frequency.pop(fElem);
 		frequency.pop_priority(sPriority);
 		frequency.pop(sElem);
+
+		f.insert(f.begin(), pair<char, int>(fElem->value, fPriority));
+		f.insert(f.begin(), pair<char, int>(sElem->value, sPriority));
 
 		frequency.push(add(fElem, sElem, fPriority, sPriority), fPriority + sPriority);
 	}
@@ -79,7 +88,8 @@ void half_tree::show_codes(element *next, string code, string &out)
 		show_codes(next->Right, code + "1", out);
 		flag = true;
 	}
-	if (!flag) {
+	if (!flag)
+	{
 		cout << code << " " << next->value << endl;
 		out += code + " " + next->value + "\n";
 	}
@@ -139,8 +149,35 @@ char decoder(element *next, string code)
 	}
 	return '*';
 }
+
+void half_tree::mass(element *next, string code, int &weight, int &averageLength, int &count, int &maxLength)
+{
+	bool flag = false;
+	if (next->Left != nullptr)
+	{
+		mass(next->Left, code + "0", weight, averageLength, count, maxLength);
+		flag = true;
+	}
+	if (next->Right != nullptr)
+	{
+		mass(next->Right, code + "1", weight, averageLength, count, maxLength);
+		flag = true;
+	}
+	if (!flag)
+	{
+		cout << code << " " << code.length() << " " << next->value << " " << f.find(next->value)->second << endl;
+		weight += code.size() * f.find(next->value)->second;
+		averageLength += code.length();
+		if (code.length() > maxLength) {
+			maxLength = code.length();
+		}
+		count++;
+	}
+}
+
 int main()
 {
+	int m = 0;
 	half_tree example;
 	queue_priority<element *> frequency;
 	string Input = "", buff, temp;
@@ -152,6 +189,7 @@ int main()
 		exit(1);
 	}
 
+	int count = 0;
 	int num;
 	cout << "To read from file press 1, to get your lines press 2.\n"; cin >> num;
 	if (num == 1) {
@@ -164,6 +202,7 @@ int main()
 		while (!fin.eof()) {
 			buff = "";
 			getline(fin, buff);
+			count += buff.length();
 			Input.append(buff);
 		}
 	}
@@ -175,16 +214,35 @@ int main()
 			if (buff == "quit") {
 				break;
 			}
+			count += buff.length();
 			Input.append(buff);
 		}
 	}
-	buff = "";
+	int count_1 = 0;
+	int averageLength = 0;
+	int maxLength = 0;
 	count_frequency(frequency, Input);
 	example.build_half_tree(frequency);
-	example.show_codes(example.GetHead(), "", temp);
+	example.mass(example.GetHead(), "", m, averageLength, count_1, maxLength);
+
 	fout << temp;
-	
+
 	fout.close();
+
+	cout << "Mass of tree: " << m << endl;
+	cout << "Enter decoding: " << endl;
+	while (true) {
+		cin >> buff;
+		if (buff == "quit") {
+			break;
+		}
+		cout << decoder(example.GetHead(), buff) << endl;
+	}
+	
+	cout << "You have " << count << " symbols." << endl;
+	cout << "Average length: " << averageLength / count_1 << endl;
+	cout << "Max length: " << maxLength << endl;
+
 	system("pause");
 	return 0;
 }
