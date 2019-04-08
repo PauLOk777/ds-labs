@@ -53,7 +53,7 @@ rb_node *make_node(int data)
 	return rn;
 }
 
-bool rb_insert(rb_tree *tree, int data)
+bool rb_insert(rb_tree *tree, int data, int &singleCount, int &doubleCount) 
 {
 	//якщо маємо пусте дерево
 	if (!tree->root)
@@ -96,10 +96,14 @@ bool rb_insert(rb_tree *tree, int data)
 			{
 				int dir2 = t->link[1] == g;
 
-				if (q == p->link[last])
+				if (q == p->link[last]) {
 					t->link[dir2] = rb_single(g, !last); //одинарний поворот. Другий випадок
-				else
+					singleCount++;
+				}
+				else {
 					t->link[dir2] = rb_double(g, !last); //подвійний поворот. Третій випадок
+					doubleCount++;
+				}
 			}
 
 			//якщо зазначена вершина вже існує - вихід з функції
@@ -176,7 +180,7 @@ bool br_remove(rb_tree *tree, int data)
 							else if (is_red(s->link[!last]))
 								g->link[dir2] = rb_single(p, last); //четвертий випадок - одинарний поворот другого типу
 
-							//корекція корльору вершин
+							//корекція кольору вершин
 							q->red = g->link[dir2]->red = 1;
 							g->link[dir2]->link[0]->red = 0;
 							g->link[dir2]->link[1]->red = 0;
@@ -223,34 +227,63 @@ void postfix_(rb_node *top) {
 	cout << top->data << " ";
 }
 
-void printTree(rb_tree *top) {
+void printTree(rb_node *top) {
+	cout << "Infix: " << endl;
+	infix_(top);
+	cout << endl;
+	cout << "Postfix: " << endl;
+	postfix_(top);
+	cout << endl;
+	cout << "Prefix: " << endl;
+	prefix_(top);
+	cout << endl;
+}
 
+void fillingArray(int *Array, int size) {
+	srand(time(NULL));
+	int count = 1;
+	while (count - 1 < size) {
+		bool flag = true;
+		int newRandom = rand() % size + 1;
+		for (int j = 0; j < count; j++) {
+			if (Array[j] == newRandom) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			Array[count - 1] = newRandom;
+			count++;
+		}
+	}
 }
 
 int main()
 {
+	int doubleCount = 0;
+	int singleCount = 0;
 	rb_tree *my_tree = new rb_tree;
-	rb_insert(my_tree, 5);
-	rb_insert(my_tree, 7);
-	rb_insert(my_tree, 9);
-	rb_insert(my_tree, 10);
-	rb_insert(my_tree, 12);
-	rb_insert(my_tree, 14);
-	rb_insert(my_tree, 15);
-	rb_insert(my_tree, 17);
+	int size;
+	cout << "Input how many elements you wanna add: "; cin >> size;
+	int *Array = new int[size];
+	fillingArray(Array, size);
+	for (int i = 0; i < size; i++) {
+		rb_insert(my_tree, Array[i], singleCount, doubleCount);
+	}
 
 	cout << "Root: " << endl;
 	cout << my_tree->root->data << endl;
-	infix_(my_tree->root);
-	cout << endl;
-	br_remove(my_tree, 12);
+	printTree(my_tree->root);
+	cout << "We have " << singleCount << " single rotates\n";
+	cout << "We have " << doubleCount << " double rotates\n";
+	
+	int num;
+	cout << "Input which element you wanna delete: "; cin >> num;
+	br_remove(my_tree, num);
+
 	cout << "Root: " << endl;
 	cout << my_tree->root->data << endl;
-	infix_(my_tree->root);
-	cout << endl;
-	prefix_(my_tree->root);
+	printTree(my_tree->root);
 	
-	cout << endl;
 	system("pause");
 	return 0;
 }
