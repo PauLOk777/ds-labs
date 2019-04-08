@@ -53,7 +53,7 @@ rb_node *make_node(int data)
 	return rn;
 }
 
-bool rb_insert(rb_tree *tree, int data, int &singleCount, int &doubleCount) 
+bool rb_insert(rb_tree *tree, int data, double &singleCount, double &doubleCount) 
 {
 	//якщо маємо пусте дерево
 	if (!tree->root)
@@ -259,8 +259,8 @@ void fillingArray(int *Array, int size) {
 
 int main()
 {
-	int doubleCount = 0;
-	int singleCount = 0;
+	double doubleCount = 0.0;
+	double singleCount = 0.0;
 	rb_tree *my_tree = new rb_tree;
 	int size;
 	cout << "Input how many elements you wanna add: "; cin >> size;
@@ -270,12 +270,14 @@ int main()
 		rb_insert(my_tree, Array[i], singleCount, doubleCount);
 	}
 
+	double coef = singleCount / doubleCount;
 	cout << "Root: " << endl;
 	cout << my_tree->root->data << endl;
 	printTree(my_tree->root);
 	cout << "We have " << singleCount << " single rotates\n";
 	cout << "We have " << doubleCount << " double rotates\n";
-	
+	cout << "Coef: " << coef << endl;
+
 	int num;
 	cout << "Input which element you wanna delete: "; cin >> num;
 	br_remove(my_tree, num);
