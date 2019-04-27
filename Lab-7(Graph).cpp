@@ -157,24 +157,24 @@ void Graph::randomGraph(int size)
 void Graph::labGraph()
 {
 	int staticMatrix[17][17] = {
-	//	 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
-		{0, 4, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//0
-		{4, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//1
-		{7, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0},//2
-		{3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0},//3
-		{0, 2, 2, 0, 0, 0, 4, 0, 0, 0, 7, 0, 0, 8, 0, 8, 0},//4
-		{0, 0, 0, 0, 0, 0, 0, 7, 3, 0, 0, 0, 1, 9,11, 0, 0},//5
-		{0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 6, 0, 0, 0, 0, 0, 0},//6
-		{0, 0, 0, 0, 0, 7, 0, 0, 0, 5, 0, 4, 0, 0, 0, 0, 0},//7
-		{0, 0, 0, 0, 0, 3, 4, 0, 0, 3, 0, 0, 9, 0, 0,15, 0},//8
-		{0, 0, 0, 0, 0, 0, 0, 5, 3, 0, 0, 0, 2, 0, 3, 0,12},//9
-		{0, 0, 2, 7, 7, 0, 6, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0},//10
-		{0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0},//11
-		{0, 0, 0, 0, 0, 1, 0, 0, 9, 2, 0, 0, 0, 0, 0, 0,11},//12
-		{0, 0, 0, 0, 8, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},//13
-		{0, 0, 0, 0, 0,11, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 8},//14
-		{0, 0, 0, 0, 8, 0, 0, 0,15, 0, 0, 0, 0, 1, 0, 0, 0},//15
-		{0, 0, 0, 0, 0, 0, 0, 0, 0,12, 0, 0,11, 0, 8, 0, 0},//16
+		//	 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
+			{0, 4, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//0
+			{4, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//1
+			{7, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0},//2
+			{3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0},//3
+			{0, 2, 2, 0, 0, 0, 4, 0, 0, 0, 7, 0, 0, 8, 0, 8, 0},//4
+			{0, 0, 0, 0, 0, 0, 0, 7, 3, 0, 0, 0, 1, 9,11, 0, 0},//5
+			{0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 6, 0, 0, 0, 0, 0, 0},//6
+			{0, 0, 0, 0, 0, 7, 0, 0, 0, 5, 0, 4, 0, 0, 0, 0, 0},//7
+			{0, 0, 0, 0, 0, 3, 4, 0, 0, 3, 0, 0, 9, 0, 0,15, 0},//8
+			{0, 0, 0, 0, 0, 0, 0, 5, 3, 0, 0, 0, 2, 0, 3, 0,12},//9
+			{0, 0, 2, 7, 7, 0, 6, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0},//10
+			{0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0},//11
+			{0, 0, 0, 0, 0, 1, 0, 0, 9, 2, 0, 0, 0, 0, 0, 0,11},//12
+			{0, 0, 0, 0, 8, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},//13
+			{0, 0, 0, 0, 0,11, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 8},//14
+			{0, 0, 0, 0, 8, 0, 0, 0,15, 0, 0, 0, 0, 1, 0, 0, 0},//15
+			{0, 0, 0, 0, 0, 0, 0, 0, 0,12, 0, 0,11, 0, 8, 0, 0},//16
 	};
 	adjacencyMatrix.resize(17);
 	vertices = adjacencyMatrix.getSize();
@@ -196,7 +196,7 @@ void Graph::showGraph()
 	for (int i = 0; i < vertices; i++) {
 		cout << i << "	";
 		for (int j = 0; j < vertices; j++) {
-			cout << setw(5) << left <<adjacencyMatrix.getMatrix()[i][j];
+			cout << setw(5) << left << adjacencyMatrix.getMatrix()[i][j];
 		}
 		cout << endl;
 	}
@@ -204,12 +204,12 @@ void Graph::showGraph()
 
 void Graph::searchInWidth()
 {
-	list<int> passedVertices;
 	list<int> tempList_1;
+	list<int> passedVertices;
 	list<int> tempList_2;
 	int count = 0;
-	for (int i = 0; count < vertices;) {
-		if (!i) tempList_2.push_back(i);
+	tempList_2.push_back(0);
+	for (int i = 0; count < vertices; count++) {
 		for (int j = 0; j < vertices; j++) {
 			if (adjacencyMatrix.getMatrix()[i][j] != 0) {
 				tempList_1.push_back(j);
@@ -225,14 +225,13 @@ void Graph::searchInWidth()
 		for (auto it = tempList_2.begin(); it != tempList_2.end(); it++) {
 			bool flag_2 = true;
 			for (auto it2 = passedVertices.begin(); it2 != passedVertices.end(); it2++) {
-				if(*it == *it2) flag_2 = false;
+				if (*it == *it2) flag_2 = false;
 			}
-			if(flag_2) passedVertices.push_back(*it);
+			if (flag_2) passedVertices.push_back(*it);
 		}
-		auto iterator = passedVertices.begin();
+		auto iterator = tempList_2.begin();
 		advance(iterator, count);
 		i = *iterator;
-		count++;
 		tempList_1.clear();
 	}
 	cout << "Search in width: " << endl;
@@ -287,7 +286,7 @@ int main() {
 		graph.showGraph();
 		graph.searchInWidth();
 	}
-	if(temp == 2) {
+	if (temp == 2) {
 		cout << "How many vertex do you wanna add: "; cin >> num;
 		graph.randomGraph(num);
 		graph.showGraph();
