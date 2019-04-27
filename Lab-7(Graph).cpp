@@ -77,19 +77,33 @@ void MySquadMatrix::resize(int size) {
 	this->size = size;
 }
 
+class GraphElement {
+public:
+	int weigth;
+	int vertex;
+	bool passed;
+	GraphElement(int weigth = 0, int vertex = 0, bool passed = false) {
+		this->weigth = weigth;
+		this->vertex = vertex;
+		this->passed = passed;
+	}
+};
+
 class Graph {
 private:
 	int vertices;
 	MySquadMatrix adjacencyMatrix;
 public:
 	Graph();
-	int getvertices() { return vertices; }
+	int getVertices() { return vertices; }
 	void insert(int*, int*, int);
 	void randomGraph(int);
 	void labGraph();
 	void showGraph();
 	void searchInWidth();
 	void searchInDepth();
+	int DijkstraAlgorithm(int, int);
+	int sumWeigth();
 };
 
 Graph::Graph()
@@ -207,10 +221,9 @@ void Graph::searchInWidth()
 {
 	list<int> tempList_1;
 	list<int> passedVertices;
-	list<int> tempList_2;
 	int count = 0, temp;
 	cout << "Input from which element you will start: "; cin >> temp;
-	tempList_2.push_back(temp);
+	passedVertices.push_back(temp);
 	for (int i = temp; count < vertices; count++) {
 		for (int j = 0; j < vertices; j++) {
 			if (adjacencyMatrix.getMatrix()[i][j] != 0) {
@@ -219,20 +232,13 @@ void Graph::searchInWidth()
 		}
 		for (auto it = tempList_1.begin(); it != tempList_1.end(); it++) {
 			bool flag_3 = true;
-			for (auto it2 = tempList_2.begin(); it2 != tempList_2.end(); it2++) {
+			for (auto it2 = passedVertices.begin(); it2 != passedVertices.end(); it2++) {
 				if (*it == *it2) flag_3 = false;
 			}
-			if (flag_3) tempList_2.push_back(*it);
+			if (flag_3) passedVertices.push_back(*it);
 		}
-		for (auto it = tempList_2.begin(); it != tempList_2.end(); it++) {
-			bool flag_2 = true;
-			for (auto it2 = passedVertices.begin(); it2 != passedVertices.end(); it2++) {
-				if (*it == *it2) flag_2 = false;
-			}
-			if (flag_2) passedVertices.push_back(*it);
-		}
-		if (tempList_2.size() < count + 1) break;
-		auto iterator = tempList_2.begin();
+		if (passedVertices.size() < count + 1) break;
+		auto iterator = passedVertices.begin();
 		advance(iterator, count);
 		i = *iterator;
 		tempList_1.clear();
@@ -305,6 +311,71 @@ void Graph::searchInDepth()
 	cout << endl;
 }
 
+int Graph::DijkstraAlgorithm(int begin, int end)
+{
+	int count = 0;
+	vector<GraphElement> tableOfRoads;
+	list<int> queue, tempList_1;
+	for (int i = 0; i < vertices; i++) {
+		if (i == begin) {
+			GraphElement forPush(0, begin, false);
+			tableOfRoads.push_back(forPush);
+		}
+		else {
+			GraphElement forPush(this->sumWeigth() * 2, i, false);
+			tableOfRoads.push_back(forPush);
+		}
+	}
+	queue.push_back(begin);
+	for (int i = begin; count < vertices; count++) {
+		for (int j = 0; j < vertices; j++) {
+			if (adjacencyMatrix.getMatrix()[i][j] != 0) {
+				tempList_1.push_back(j);
+				if (tableOfRoads[i].weigth + adjacencyMatrix.getMatrix()[i][j] < tableOfRoads[j].weigth) {
+					tableOfRoads[j].weigth = tableOfRoads[i].weigth + adjacencyMatrix.getMatrix()[i][j];
+				}
+			}
+		}
+		for (auto it = tempList_1.begin(); it != tempList_1.end(); it++) {
+			bool flag_3 = true;
+			for (auto it2 = queue.begin(); it2 != queue.end(); it2++) {
+				if (*it == *it2) flag_3 = false;
+			}
+			if (flag_3) queue.push_back(*it);
+		}
+		if (queue.size() < count + 1) break;
+		auto iterator = queue.begin();
+		advance(iterator, count);
+		i = *iterator;
+		tempList_1.clear();
+	}
+	return tableOfRoads[end].weigth;
+}
+
+int Graph::sumWeigth()
+{
+	int sum = 0;
+	for (int i = 0; i < vertices; i++) {
+		for (int j = 0; j < vertices; j++) {
+			sum += adjacencyMatrix.getMatrix()[i][j];
+		}
+	}
+	return sum;
+}
+
+void DijkstraForAll(Graph& graph) {
+	for (int i = 0; i < graph.getVertices(); i++) {
+		for (int j = 0; j < graph.getVertices(); j++) {
+			if (graph.sumWeigth() * 2 == graph.DijkstraAlgorithm(i, j)) {
+				cout << "From " << i << " to " << j << " no road." << endl;
+			}
+			else {
+				cout << "From " << i << " to " << j << " = " << graph.DijkstraAlgorithm(i, j) << endl;
+			}
+		}
+	}
+}
+
 int main() {
 	int num, temp;
 	Graph graph;
@@ -335,6 +406,7 @@ int main() {
 		graph.showGraph();
 		graph.searchInWidth();
 		graph.searchInDepth();
+		DijkstraForAll(graph);
 	}
 	if (temp == 2) {
 		cout << "How many vertex do you wanna add: "; cin >> num;
@@ -342,12 +414,14 @@ int main() {
 		graph.showGraph();
 		graph.searchInWidth();
 		graph.searchInDepth();
+		DijkstraForAll(graph);
 	}
 	if (temp == 3) {
 		graph.labGraph();
 		graph.showGraph();
 		graph.searchInWidth();
 		graph.searchInDepth();
+		DijkstraForAll(graph);
 	}
 
 	system("pause");
