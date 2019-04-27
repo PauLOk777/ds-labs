@@ -208,9 +208,10 @@ void Graph::searchInWidth()
 	list<int> tempList_1;
 	list<int> passedVertices;
 	list<int> tempList_2;
-	int count = 0;
-	tempList_2.push_back(0);
-	for (int i = 0; count < vertices; count++) {
+	int count = 0, temp;
+	cout << "Input from which element you will start: "; cin >> temp;
+	tempList_2.push_back(temp);
+	for (int i = temp; count < vertices; count++) {
 		for (int j = 0; j < vertices; j++) {
 			if (adjacencyMatrix.getMatrix()[i][j] != 0) {
 				tempList_1.push_back(j);
@@ -255,7 +256,53 @@ void Graph::searchInWidth()
 
 void Graph::searchInDepth()
 {
-
+	list<int> passedVertices;
+	int temp, count_1 = 0;
+	cout << "Input element from which you will start: "; cin >> temp;
+	passedVertices.push_back(temp);
+	for (int i = temp; i < vertices;) {
+		int count = 0;
+		for (int j = 0; j < vertices; j++) {
+			if (adjacencyMatrix.getMatrix()[i][j] != 0) {
+				bool flag_1 = true;
+				for (auto itpv = passedVertices.begin(); itpv != passedVertices.end(); itpv++) {
+					if (j == *itpv) flag_1 = false;
+				}
+				if (flag_1) {
+					passedVertices.push_back(j);
+					count++;
+					break;
+				}
+			}
+		}
+		if (!count) {
+			count_1++;
+		}
+		else {
+			count_1 = 0;
+		}
+		if (passedVertices.size() < count_1 + 1) {
+			break;
+		}
+		auto it = passedVertices.begin();
+		advance(it, passedVertices.size() - count_1 - 1);
+		i = *it;
+	}
+	cout << "Search in depth: " << endl;
+	cout << "Graph from which you start bypass: " << endl;
+	for (auto i = passedVertices.begin(); i != passedVertices.end(); ++i) {
+		cout << *i << " ";
+	}
+	cout << endl;
+	cout << "Another vertices(not in your graph): " << endl;
+	for (int i = 0; i < vertices; i++) {
+		bool flag = true;
+		for (auto it = passedVertices.begin(); it != passedVertices.end(); ++it) {
+			if (i == *it) flag = false;
+		}
+		if (flag) cout << i << " ";
+	}
+	cout << endl;
 }
 
 int main() {
@@ -287,17 +334,20 @@ int main() {
 		}
 		graph.showGraph();
 		graph.searchInWidth();
+		graph.searchInDepth();
 	}
 	if (temp == 2) {
 		cout << "How many vertex do you wanna add: "; cin >> num;
 		graph.randomGraph(num);
 		graph.showGraph();
 		graph.searchInWidth();
+		graph.searchInDepth();
 	}
 	if (temp == 3) {
 		graph.labGraph();
 		graph.showGraph();
 		graph.searchInWidth();
+		graph.searchInDepth();
 	}
 
 	system("pause");
