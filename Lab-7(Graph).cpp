@@ -84,7 +84,7 @@ private:
 public:
 	Graph();
 	int getvertices() { return vertices; }
-	void insert(int*, int*);
+	void insert(int*, int*, int);
 	void randomGraph(int);
 	void labGraph();
 	void showGraph();
@@ -98,7 +98,7 @@ Graph::Graph()
 	adjacencyMatrix.resize(0);
 }
 
-void Graph::insert(int* ArrayOfVertices = nullptr, int* ArrayOfWeights = nullptr)
+void Graph::insert(int* ArrayOfVertices = nullptr, int* ArrayOfWeights = nullptr, int size = 0)
 {
 	int count = 0;
 	if (++vertices == 1) {
@@ -115,14 +115,15 @@ void Graph::insert(int* ArrayOfVertices = nullptr, int* ArrayOfWeights = nullptr
 			return;
 		}
 	}
-	for (int i = 0; i < 1; i++) {
-		for (int j = 0; j < vertices; j++) {
-			if (j == ArrayOfVertices[j]) {
-				adjacencyMatrix.getMatrix()[vertices - 1][j] = adjacencyMatrix.getMatrix()[j][vertices - 1] = ArrayOfWeights[count];
+	for (int i = 0; i < vertices; i++) {
+		for (int k = 0; k < size; k++) {
+			if (i == ArrayOfVertices[k]) {
+				adjacencyMatrix.getMatrix()[vertices - 1][i] = adjacencyMatrix.getMatrix()[i][vertices - 1] = ArrayOfWeights[count];
 				count++;
 			}
 			else {
-				adjacencyMatrix.getMatrix()[vertices - 1][j] = adjacencyMatrix.getMatrix()[j][vertices - 1] = 0;
+				if(adjacencyMatrix.getMatrix()[vertices - 1][i] != ArrayOfWeights[count - 1])
+					adjacencyMatrix.getMatrix()[vertices - 1][i] = adjacencyMatrix.getMatrix()[i][vertices - 1] = 0;
 			}
 		}
 	}
@@ -229,6 +230,7 @@ void Graph::searchInWidth()
 			}
 			if (flag_2) passedVertices.push_back(*it);
 		}
+		if (tempList_2.size() < count + 1) break;
 		auto iterator = tempList_2.begin();
 		advance(iterator, count);
 		i = *iterator;
@@ -279,7 +281,7 @@ int main() {
 			for (int j = 0; j < num_2; j++) {
 				cin >> ArrayOfWeights[j];
 			}
-			graph.insert(ArrayOfVertices, ArrayOfWeights);
+			graph.insert(ArrayOfVertices, ArrayOfWeights, num_2);
 			delete[] ArrayOfVertices;
 			delete[] ArrayOfWeights;
 		}
