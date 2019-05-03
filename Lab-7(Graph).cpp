@@ -127,6 +127,8 @@ public:
 	void randomGraph(int);
 	void labGraph();
 	void showGraph();
+	void showGraphWeight();
+	void showGraphRoad();
 	void searchInWidth();
 	void searchInDepth();
 	int DijkstraAlgorithm(int, int);
@@ -242,6 +244,40 @@ void Graph::showGraph()
 		cout << i << "	";
 		for (int j = 0; j < vertices; j++) {
 			cout << setw(5) << left << adjacencyMatrix.getMatrix()[i][j];
+		}
+		cout << endl;
+	}
+}
+
+void Graph::showGraphWeight()
+{
+	cout << "Weight matrix: " << endl;
+	for (int i = 0; i < vertices; i++) {
+		if (!i) cout << "	";
+		cout << setw(5) << left << i;
+	}
+	cout << endl << endl;
+	for (int i = 0; i < vertices; i++) {
+		cout << i << "	";
+		for (int j = 0; j < vertices; j++) {
+			cout << setw(5) << left << weightMatrix.getMatrix()[i][j];
+		}
+		cout << endl;
+	}
+}
+
+void Graph::showGraphRoad()
+{
+	cout << "Road matrix: " << endl;
+	for (int i = 0; i < vertices; i++) {
+		if (!i) cout << "	";
+		cout << setw(5) << left << i;
+	}
+	cout << endl << endl;
+	for (int i = 0; i < vertices; i++) {
+		cout << i << "	";
+		for (int j = 0; j < vertices; j++) {
+			cout << setw(5) << left << roadMatrix.getMatrix()[i][j];
 		}
 		cout << endl;
 	}
@@ -409,7 +445,7 @@ void Graph::FloydAlgoithm()
 				roadMatrix.getMatrix()[i][j] = j;
 			}
 			else {
-				roadMatrix.getMatrix()[i][j] = 0;
+				roadMatrix.getMatrix()[i][j] = -1;
 			}
 			if (i == j) {
 				roadMatrix.getMatrix()[i][j] = i;
@@ -425,33 +461,22 @@ void Graph::FloydAlgoithm()
 				if (k == i) continue;
 				if (weightMatrix.getMatrix()[j][i] + weightMatrix.getMatrix()[i][k] < weightMatrix.getMatrix()[j][k]) {
 					weightMatrix.getMatrix()[j][k] = weightMatrix.getMatrix()[j][i] + weightMatrix.getMatrix()[i][k];
-					int temp, compare;
-					bool flag = true;
+					int temp_1 = i;
 					while (true) {
-						if (temp == k) break;
-						if (flag) {
-							temp = i;
-							flag = false;
+						if (roadMatrix.getMatrix()[j][temp_1] == temp_1) {
+							roadMatrix.getMatrix()[j][k] = temp_1;
+							break;
+						}
+						else {
+							temp_1 = roadMatrix.getMatrix()[j][temp_1];
 						}
 					}
-					roadMatrix.getMatrix()[j][k] = temp;
 				}
 			}
 		}
 	}
-	cout << "Weight matrix: " << endl;
-	for (int i = 0; i < vertices; i++) {
-		if (!i) cout << "	";
-		cout << setw(5) << left << i;
-	}
-	cout << endl << endl;
-	for (int i = 0; i < vertices; i++) {
-		cout << i << "	";
-		for (int j = 0; j < vertices; j++) {
-			cout << setw(5) << left << weightMatrix.getMatrix()[i][j];
-		}
-		cout << endl;
-	}
+	showGraphWeight();
+	showGraphRoad();
 }
 
 void DijkstraForAll(Graph & graph) {
