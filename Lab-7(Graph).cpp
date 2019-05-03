@@ -17,6 +17,7 @@ public:
 	void resize(int);
 	int** getMatrix() { return squadMatrix; }
 	int getSize() { return size; }
+	MySquadMatrix& operator=(const MySquadMatrix &);
 };
 
 MySquadMatrix::MySquadMatrix() {
@@ -77,6 +78,30 @@ void MySquadMatrix::resize(int size) {
 	this->size = size;
 }
 
+MySquadMatrix& MySquadMatrix::operator=(const MySquadMatrix &other)
+{
+	if (other.size) {
+		this->squadMatrix = nullptr;
+	}
+	int** newSquad = new int* [other.size];
+	for (int i = 0; i < size; i++) {
+		newSquad[i] = new int[other.size];
+	}
+	for (int i = 0; i < other.size; i++) {
+		for (int j = 0; j < other.size; j++) {
+			newSquad[i][j] = other.squadMatrix[i][j];
+		}
+	}
+	for (int i = 0; i < this->size; i++) {
+		delete[] squadMatrix[i];
+	}
+	delete[] squadMatrix;
+	squadMatrix = newSquad;
+	this->size = size;
+
+	return *this;
+}
+
 class GraphElement {
 public:
 	int weigth;
@@ -93,6 +118,8 @@ class Graph {
 private:
 	int vertices;
 	MySquadMatrix adjacencyMatrix;
+	MySquadMatrix weightMatrix;
+	MySquadMatrix roadMatrix;
 public:
 	Graph();
 	int getVertices() { return vertices; }
@@ -104,12 +131,15 @@ public:
 	void searchInDepth();
 	int DijkstraAlgorithm(int, int);
 	int sumWeigth();
+	void FloydAlgoithm();
 };
 
 Graph::Graph()
 {
 	vertices = 0;
 	adjacencyMatrix.resize(0);
+	weightMatrix.resize(0);
+	roadMatrix.resize(0);
 }
 
 void Graph::insert(int* ArrayOfVertices = nullptr, int* ArrayOfWeights = nullptr, int size = 0)
@@ -136,7 +166,7 @@ void Graph::insert(int* ArrayOfVertices = nullptr, int* ArrayOfWeights = nullptr
 				count++;
 			}
 			else {
-				if(adjacencyMatrix.getMatrix()[vertices - 1][i] != ArrayOfWeights[count - 1])
+				if (adjacencyMatrix.getMatrix()[vertices - 1][i] != ArrayOfWeights[count - 1])
 					adjacencyMatrix.getMatrix()[vertices - 1][i] = adjacencyMatrix.getMatrix()[i][vertices - 1] = 0;
 			}
 		}
@@ -363,7 +393,68 @@ int Graph::sumWeigth()
 	return sum;
 }
 
-void DijkstraForAll(Graph& graph) {
+void Graph::FloydAlgoithm()
+{
+	weightMatrix.resize(vertices);
+	roadMatrix.resize(vertices);
+	for (int i = 0; i < vertices; i++) {
+		for (int j = 0; j < vertices; j++) {
+			if (adjacencyMatrix.getMatrix()[i][j] == 0 && i != j) {
+				weightMatrix.getMatrix()[i][j] = this->sumWeigth() * 2;
+			}
+			else {
+				weightMatrix.getMatrix()[i][j] = adjacencyMatrix.getMatrix()[i][j];
+			}
+			if (adjacencyMatrix.getMatrix()[i][j] != 0) {
+				roadMatrix.getMatrix()[i][j] = j;
+			}
+			else {
+				roadMatrix.getMatrix()[i][j] = 0;
+			}
+			if (i == j) {
+				roadMatrix.getMatrix()[i][j] = i;
+				weightMatrix.getMatrix()[i][j] = 0;
+			}
+		}
+	}
+
+	for (int i = 0; i < vertices; i++) {
+		for (int j = 0; j < vertices; j++) {
+			if (j == i) continue;
+			for (int k = 0; k < vertices; k++) {
+				if (k == i) continue;
+				if (weightMatrix.getMatrix()[j][i] + weightMatrix.getMatrix()[i][k] < weightMatrix.getMatrix()[j][k]) {
+					weightMatrix.getMatrix()[j][k] = weightMatrix.getMatrix()[j][i] + weightMatrix.getMatrix()[i][k];
+					int temp, compare;
+					bool flag = true;
+					while (true) {
+						if (temp == k) break;
+						if (flag) {
+							temp = i;
+							flag = false;
+						}
+					}
+					roadMatrix.getMatrix()[j][k] = temp;
+				}
+			}
+		}
+	}
+	cout << "Weight matrix: " << endl;
+	for (int i = 0; i < vertices; i++) {
+		if (!i) cout << "	";
+		cout << setw(5) << left << i;
+	}
+	cout << endl << endl;
+	for (int i = 0; i < vertices; i++) {
+		cout << i << "	";
+		for (int j = 0; j < vertices; j++) {
+			cout << setw(5) << left << weightMatrix.getMatrix()[i][j];
+		}
+		cout << endl;
+	}
+}
+
+void DijkstraForAll(Graph & graph) {
 	for (int i = 0; i < graph.getVertices(); i++) {
 		for (int j = 0; j < graph.getVertices(); j++) {
 			if (graph.sumWeigth() * 2 == graph.DijkstraAlgorithm(i, j)) {
@@ -421,7 +512,7 @@ int main() {
 		graph.showGraph();
 		graph.searchInWidth();
 		graph.searchInDepth();
-		DijkstraForAll(graph);
+		graph.FloydAlgoithm();
 	}
 
 	system("pause");
