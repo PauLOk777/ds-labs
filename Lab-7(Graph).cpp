@@ -7,6 +7,10 @@
 
 using namespace std;
 
+int countForDijkstra = 0;
+int countForFloyd = 0;
+int countForBellmanFord = 0;
+
 class MySquadMatrix {
 private:
 	int** squadMatrix;
@@ -130,7 +134,7 @@ public:
 	void showGraphRoad();
 	void searchInWidth(int);
 	void searchInDepth(int);
-	int DijkstraAlgorithm(int, int);
+	void DijkstraAlgorithm(int*, int);
 	int sumWeigth();
 	void FloydAlgoithm();
 	void BellmanFordAlgorithm(int, int*, int*);
@@ -189,7 +193,7 @@ void Graph::randomGraph(int size)
 				adjacencyMatrix.getMatrix()[i][j] = 0;
 				continue;
 			}
-			if (count % 2 == 0) {
+			if (count % 3 == 0) {
 				adjacencyMatrix.getMatrix()[i][j] = adjacencyMatrix.getMatrix()[j][i] = rand() % 30 + 1;
 				count++;
 				continue;
@@ -383,9 +387,9 @@ void Graph::searchInDepth(int begin)
 	cout << endl;
 }
 
-int Graph::DijkstraAlgorithm(int begin, int end)
+void Graph::DijkstraAlgorithm(int *distance, int begin)
 {
-	int* distance = new int[vertices], count, index, i, temp_1;
+	int count, index, i;
 	bool* visited = new bool[vertices];
 	for (i = 0; i < vertices; i++)
 	{
@@ -395,23 +399,24 @@ int Graph::DijkstraAlgorithm(int begin, int end)
 	for (count = 0; count < vertices - 1; count++)
 	{
 		int min = sumWeigth() * 2;
-		for (i = 0; i < vertices; i++)
+		for (i = 0; i < vertices; i++) {
+			countForDijkstra++;
 			if (!visited[i] && distance[i] <= min)
 			{
 				min = distance[i];
 				index = i;
 			}
-		temp_1 = index;
-		visited[temp_1] = true;
-		for (i = 0; i < vertices; i++)
-			if (!visited[i] && adjacencyMatrix.getMatrix()[temp_1][i] && distance[temp_1] != sumWeigth() * 2
-				&& distance[temp_1] + adjacencyMatrix.getMatrix()[temp_1][i] < distance[i])
-				distance[i] = distance[temp_1] + adjacencyMatrix.getMatrix()[temp_1][i];
+		}
+		visited[index] = true;
+		for (i = 0; i < vertices; i++) {
+			countForDijkstra++;
+			if (!visited[i] && adjacencyMatrix.getMatrix()[index][i] && distance[index] != sumWeigth() * 2
+				&& distance[index] + adjacencyMatrix.getMatrix()[index][i] < distance[i]) {
+				distance[i] = distance[index] + adjacencyMatrix.getMatrix()[index][i];
+			}
+		}
 	}
-	end = distance[end];
-	delete[] distance;
 	delete[] visited;
-	return end;
 }
 
 int Graph::sumWeigth()
@@ -435,6 +440,7 @@ void Graph::FloydAlgoithm()
 			if (j == i) continue;
 			for (int k = 0; k < vertices; k++) {
 				if (k == i) continue;
+				countForFloyd++;
 				if (weightMatrix.getMatrix()[j][i] + weightMatrix.getMatrix()[i][k] < weightMatrix.getMatrix()[j][k]) {
 					weightMatrix.getMatrix()[j][k] = weightMatrix.getMatrix()[j][i] + weightMatrix.getMatrix()[i][k];
 					int temp_1 = i;
@@ -466,21 +472,25 @@ void Graph::BellmanFordAlgorithm(int elem, int *RoadArray, int *WeightArray)
 			}
 		}
 	}
-
 	for (int i = 0; i < vertices; i++) {
 		RoadArray[i] = -1;
 		WeightArray[i] = this->sumWeigth() * 2;
 	}
 	RoadArray[elem] = 0;
 	WeightArray[elem] = 0;
-	
+	countForBellmanFord++;
+
 	for (int i = 0; i < vertices - 1; i++) {
+		int count = 0;
 		for (int j = 0; j < Edges.size(); j++) {
+			countForBellmanFord++;
 			if (WeightArray[Edges[j].adjacencyVertex_1] + Edges[j].weight < WeightArray[Edges[j].adjacencyVertex_2]) {
 				WeightArray[Edges[j].adjacencyVertex_2] = WeightArray[Edges[j].adjacencyVertex_1] + Edges[j].weight;
 				RoadArray[Edges[j].adjacencyVertex_2] = Edges[j].adjacencyVertex_1;
+				count++;
 			}
 		}
+		if (!count) break;
 	}
 }
 
@@ -532,6 +542,7 @@ int Graph::numberOfEdges()
 }
 
 void DijkstraForAll(Graph & graph) {
+	int* distance = new int[graph.getVertices()];
 	cout << "Dijkstra algorithm: " << endl;
 	for (int i = 0; i < graph.getVertices(); i++) {
 		if (!i) cout << "	";
@@ -540,16 +551,18 @@ void DijkstraForAll(Graph & graph) {
 	cout << endl << endl;
 	for (int i = 0; i < graph.getVertices(); i++) {
 		cout << i << "	";
+		graph.DijkstraAlgorithm(distance, i);
 		for (int j = 0; j < graph.getVertices(); j++) {
-			if (graph.sumWeigth() * 2 == graph.DijkstraAlgorithm(i, j)) {
+			if (graph.sumWeigth() * 2 == distance[j]) {
 				cout << setw(5) << left << "no";
 			}
 			else {
-				cout << setw(5) << left << graph.DijkstraAlgorithm(i, j);
+				cout << setw(5) << left << distance[j];
 			}
 		}
 		cout << endl;
 	}
+	delete[] distance;
 }
 
 void BellmanFordForAll(Graph & graph) {
@@ -564,7 +577,12 @@ void BellmanFordForAll(Graph & graph) {
 		}
 		cout << endl << "St: ";
 		for (int j = 0; j < graph.getVertices(); j++) {
-			cout << setw(4) << left << RoadArray[j];
+			if (RoadArray[j] == -1) {
+				cout << setw(4) << left << "no";
+			}
+			else {
+				cout << setw(4) << left << RoadArray[j];
+			}
 		}
 		cout << endl << "Wt: ";
 		for (int j = 0; j < graph.getVertices(); j++) {
@@ -631,12 +649,21 @@ void algorithms(Graph& graph) {
 		if (num == "quit") break;
 		if (stoi(num) == 1) {
 			DijkstraForAll(graph);
+			cout << "Number of comparation: " << countForDijkstra << endl;
+			cout << "Number of edges: " << graph.numberOfEdges() << endl;
+			cout << "Algorithmic complexity: " << 2 * graph.getVertices() * (graph.getVertices() * (graph.getVertices() - 1)) << endl;
 		}
 		if (stoi(num) == 2) {
 			graph.FloydAlgoithm();
+			cout << "Number of comparation: " << countForFloyd << endl;
+			cout << "Number of edges: " << graph.numberOfEdges() << endl;
+			cout << "Algorithmic complexity: " << graph.getVertices() * graph.getVertices() * graph.getVertices() << endl;
 		}
 		if (stoi(num) == 3) {
 			BellmanFordForAll(graph);
+			cout << "Number of comparation: " << countForBellmanFord << endl;
+			cout << "Number of edges: " << graph.numberOfEdges() << endl;
+			cout << "Algorithmic complexity: " << graph.getVertices() * (graph.getVertices() * graph.numberOfEdges()) << endl;
 		}
 	}
 }
